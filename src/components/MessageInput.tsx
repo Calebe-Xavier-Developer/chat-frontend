@@ -1,4 +1,3 @@
-// src/components/MessageInput.tsx
 'use client';
 import { useState } from 'react';
 import { sendMessage } from '@/services/chatApi';
@@ -39,11 +38,11 @@ export default function MessageInput({ chatId }: { chatId: string }) {
           setMessage(e.target.value);
           handleTyping();
         }}
-        placeholder="Digite sua mensagem"
+        placeholder="Type a message"
         className="border p-2 w-full"
       />
       <button onClick={handleSendMessage} className="bg-blue-500 text-white p-2 mt-2">
-        Enviar
+        Send
       </button>
     </div>
   );

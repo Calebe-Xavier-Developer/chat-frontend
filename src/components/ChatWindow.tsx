@@ -1,4 +1,3 @@
-// src/components/ChatWindow.tsx
 'use client';
 import { useEffect, useState } from 'react';
 import { getMessages, joinChat } from '@/services/chatApi';
@@ -29,7 +28,7 @@ export default function ChatWindow({ chatId }: { chatId: string }) {
 
   return (
     <div>
-      <h1>Mensagens</h1>
+      <h1>Messages</h1>
       <ul>
         {messages.map((msg) => (
           <li key={msg.id}>
