@@ -10,3 +10,11 @@ export interface Message {
   timestamp?: string;
   status?: MessageStatus;
 }
+
+export type Chat = {
+  chat_id: string;
+  chat_name?: string;
+  color?: string;
+  participants: string[];
+  isTyping?: boolean;
+};

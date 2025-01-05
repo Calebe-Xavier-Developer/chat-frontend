@@ -6,11 +6,11 @@ interface Chat {
   participants: string[];
 }
 
-export const createChat = async (): Promise<string> => {
+export const createChat = async (): Promise<Chat> => {
   const response = await api.post('/chats', {
     participants: [getUserId()],
   });
-  return response.data.chat_id;
+  return response.data;
 };
 
 export const joinChat = async (chatId: string): Promise<void> => {
@@ -54,7 +54,7 @@ export const updatePresence = async (
 
 export const markChatAsRead = async (chatId: string): Promise<void> => {
   await api.post(`/chats/${chatId}/read`, {
-    user_id: 'bot_user',
+    user_id: getUserId(),
   });
 };
 

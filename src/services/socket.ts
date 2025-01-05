@@ -26,11 +26,11 @@ export const leaveChatSocket = (chatId: string) => {
   if (activeChatId === chatId) activeChatId = null;
 };
 
-export const sendMessageSocket = (chatId: string, message: string) => {
+export const sendMessageSocket = (chatId: string, message: string, type: 'text' | 'image' | 'audio' = 'text') => {
   socket.emit('send_message', {
     chatId,
     userId: getUserId(),
-    type: 'text',
+    type,
     content: message,
   });
 };
@@ -50,7 +50,7 @@ const createListener = (() => {
       socket.on(event, (data) => {
         if (event === 'message_received' || event === 'chat_read') {
           if (data.chat_id !== activeChatId) {
-            console.warn(`⚠️ Evento ignorado (Chat ID não corresponde): ${data.chat_id}`);
+            console.warn(`⚠️ Event skipped (Chat ID does not match): ${data.chat_id}`);
             return;
           }
         }

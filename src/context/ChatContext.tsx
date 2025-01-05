@@ -1,41 +1,42 @@
 'use client';
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Message } from '@/utils/types';
+import { Chat, Message } from '@/utils/types';
 import {
   joinChatSocket,
   connectToChat,
   disconnectWebSocket,
 } from '@/services/socket';
-import { getMessages, joinChat, markChatAsRead } from '@/services/chatApi';
+import { getMessages, joinChat } from '@/services/chatApi';
 import { getUserId } from '@/utils/userSession';
-
 interface ChatContextProps {
-  chosenChatId: string;
-  setChosenChatId: (id: string) => void;
+  chosenChat: Chat;
+  setChosenChat: (chat: Chat) => void;
   messages: Message[];
-  sendMessage: (message: Message) => void;
+  userStatus: { isTyping: boolean; isOffline: boolean; isOnline: boolean; } | null;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
 
 export const ChatProvider = ({ children }: { children: ReactNode }) => {
-  const [chosenChatId, setChosenChatId] = useState<string>('');
+  const [chosenChat, setChosenChat] = useState<Chat>({ chat_id: '', chat_name: '', participants: [] });
   const [messages, setMessages] = useState<Message[]>([]);
+  const [userStatus, setUserStatus] = useState<{ isTyping: boolean; isOffline: boolean; isOnline: boolean; } | null>(null);
+
 
   useEffect(() => {
-    if (!chosenChatId) return;
+    if (!chosenChat.chat_id || chosenChat.chat_id === '') return;
 
     const initializeChat = async () => {
-      await joinChat(chosenChatId);
-      joinChatSocket(chosenChatId);
-      connectToChat(chosenChatId);
+      await joinChat(chosenChat.chat_id);
+      joinChatSocket(chosenChat.chat_id);
+      connectToChat(chosenChat.chat_id);
 
-      const fetchedMessages = await getMessages(chosenChatId);
+      const fetchedMessages = await getMessages(chosenChat.chat_id);
       setMessages(
         fetchedMessages.map((msg) => ({ ...msg, status: 'read' }))
       );
 
-      await markChatAsRead(chosenChatId);
+      // await markChatAsRead(chosenChatId); API is broken
     };
 
     initializeChat();
@@ -57,15 +58,26 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     const handleWebSocketChatRead = (event: CustomEvent) => {
       const { last_read_message_id }: { last_read_message_id: string } = event.detail;
 
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === last_read_message_id ? { ...msg, status: 'read' } : msg
-        )
-      );
+      setMessages((prev) => {
+        const lastReadIndex = prev.findIndex((msg) => msg.id === last_read_message_id);
+        if (lastReadIndex === -1) return prev;
+
+        return prev.map((msg, index) =>
+          index <= lastReadIndex ? { ...msg, status: 'read' } : msg
+        );
+      });
     };
 
     const handleWebSocketPresenceUpdated = (event: CustomEvent) => {
-      console.log('👤 Presence Event:', event.detail);
+      const { user_id, status } = event.detail;
+
+      if (user_id === 'bot_user') {
+        setUserStatus({ 
+          isTyping: status === 'typing', 
+          isOnline: status === 'online', 
+          isOffline: status === 'offline' 
+        });
+      }
     };
 
     window.addEventListener('websocket_message_received', handleWebSocketMessageReceived as EventListener);
@@ -79,14 +91,10 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
       window.removeEventListener('websocket_chat_read', handleWebSocketChatRead as EventListener);
       window.removeEventListener('websocket_presence_updated', handleWebSocketPresenceUpdated as EventListener);
     };
-  }, [chosenChatId]);
-
-  const sendMessage = (message: Message) => {
-    setMessages((prev) => [...prev, { ...message, status: 'sent' }]);
-  };
+  }, [chosenChat]);
 
   return (
-    <ChatContext.Provider value={{ chosenChatId, setChosenChatId, messages, sendMessage }}>
+    <ChatContext.Provider value={{ chosenChat, setChosenChat, messages, userStatus  }}>
       {children}
     </ChatContext.Provider>
   );

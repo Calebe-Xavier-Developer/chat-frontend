@@ -4,12 +4,12 @@ import ChatWindow from '@/components/ChatWindow';
 
 export default function Home() {
   return (
-    <main className="p-4">
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white p-4 shadow-md">
+    <main className="w-full h-full flex py-4 bg-dark-highBlue">
+      <div className="w-full h-full flex justify-around items-center">
+        <div className="w-[30%] h-[90%] flex flex-col shadow-md">
           <ChatList />
         </div>
-        <div className="col-span-2 bg-white p-4 shadow-md">
+        <div className="w-[65%] h-[90%]  flex flex-col shadow-md">
           <ChatWindow />
         </div>
       </div>

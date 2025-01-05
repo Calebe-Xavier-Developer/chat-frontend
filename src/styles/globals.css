@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --dark-blue: #1e3f51;
+  --high-dark-blue: #111f2a;
+  --light-blue: #aacee8;
+  --primary-blue: #39b5fc;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,6 +21,61 @@
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: var(--high-dark-blue);
   font-family: Arial, Helvetica, sans-serif;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  border-radius: 28px;
+  background-color: #02518a;
+}
+
+.custom-scroll::-webkit-scrollbar{
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-corner {
+  display: none;
+}
+
+.custom-audio {
+  width: 300px;
+  height: 50px;
+  border-radius: 8px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px;
+}
+
+.custom-audio::-webkit-media-controls-play-button {
+  background-color: #1aa9bc;
+  border-radius: 50%;
+}
+
+.custom-audio::-webkit-media-controls-current-time-display,
+.custom-audio::-webkit-media-controls-time-remaining-display {
+  color: #08404e;
+  font-size: 12px;
+}
+
+.custom-audio::-webkit-media-controls-volume-slider {
+  display: none;
+}
+
+.custom-audio::-webkit-media-controls-mute-button {
+  display: none !important;
+}
+
+.custom-audio::-webkit-media-controls-volume-slider {
+  display: none !important;
 }
