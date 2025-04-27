@@ -1,4 +1,4 @@
-# 🚀 **Chat Frontend Application**
+# 🚀 **Chat Frontend App - Real-Time Messaging with Next.js and WebSockets**
 
 This is a **Next.js-based Chat Application** that connects to a backend API built with FastAPI, supporting **real-time messaging, user presence updates, and multimedia content** (text, image, audio). It also integrates WebSockets for real-time updates and ensures a seamless user experience.
 
