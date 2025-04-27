@@ -12,7 +12,6 @@ export default function ChatWindow() {
   const { messages, chosenChat, userStatus } = useChat();
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const previousMessagesRef = useRef(messages);
-
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
   const [lastUnreadMessageIsNotCurrentUser, setLastUnreadMessageIsNotCurrentUser] = useState(false);
@@ -160,7 +159,7 @@ export default function ChatWindow() {
 
   return (
     <div className='relative h-full w-full rounded-[24px] bg-dark-blue'>
-      {messages.length === 0 && (
+      {(messages.length === 0 && chosenChat?.chat_name === "") && (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center">
           <div className="flex flex-col items-center justify-center">
             <span className="text-5xl animate-bounce">💬</span>
@@ -171,7 +170,7 @@ export default function ChatWindow() {
           </div>
         </div>
       )}
-      {messages.length > 0 && (
+      {(messages.length > 0 || chosenChat?.chat_name !== "") && (
         <>
           <div className="h-[10%] text-xl font-bold p-2 flex items-start">
             <span className='flex self-center items-center justify-center w-[52px] h-[52px] rounded-full bg-opacity-10 bg-white' style={{ color: chosenChat.color, border: `1px solid ${chosenChat.color}` }}>
